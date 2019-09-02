@@ -15,42 +15,35 @@
 package main
 
 import (
-	"log"
+	cmd "github.com/monitoring-mixins/mixtool/pkg/cmd"
+	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
-
-	"github.com/urfave/cli"
 )
 
 // Version of the mixtool.
 // This is overridden at compile time.
-var version = "0.0.0"
+var version = "0.1.0"
 
-func main() {
-	app := cli.NewApp()
-	app.Name = "mixtool"
-	app.Usage = "Improves your jsonnet mixins workflow"
-	app.Description = "mixtool helps with generating, building and linting jsonnet mixins"
-	app.Version = version
-
-	app.Commands = cli.Commands{
-		generateCommand(),
-		lintCommand(),
-		newCommand(),
-		// runbookCommand(),
-	}
-
-	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
-	}
+type initCmdKingPin struct {
+	cmd.InitCmdOpts
 }
 
-// If no jPath is given, we check if ./vendor exists in the current directory and use it.
-func availableVendor(jPathsFlag []string) []string {
-	if len(jPathsFlag) == 0 {
-		_, err := os.Stat("./vendor")
-		if err == nil {
-			return []string{"./vendor"}
-		}
-	}
-	return jPathsFlag
+func (opts *initCmdKingPin) run(c *kingpin.ParseContext) error {
+	return cmd.InitCmdFunc(opts.InitCmdOpts)
+}
+
+func configureInitCommand(app *kingpin.Application) {
+	initopts := &initCmdKingPin{}
+	initcmd := app.Command("init", "Initialize a new package directory").Action(initopts.run)
+	initcmd.Flag("force", "overwrite existing files").Short('f').Default("false").BoolVar(&initopts.Force)
+	initcmd.Flag("dest", "directory path to create").Short('d').Default(".").StringVar(&initopts.Dir)
+
+}
+
+func main() {
+	app := kingpin.New("mixtool", "Monitoring packages cli")
+	app.Author("Antoine Legrand<alegrand@redhat.com>, Matthias Loibl<mloibl@redhat.com>")
+	app.Version(version)
+	configureInitCommand(app)
+	kingpin.MustParse(app.Parse(os.Args[1:]))
 }

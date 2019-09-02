@@ -1,0 +1,30 @@
+name: "Kubernetes all systems alerts"
+description: "Complete list of alerts to monitor a vanilla kubernetes cluster "
+
+config:
+  kubeAPISelector: "job=kube-master"
+
+
+dependencies:
+  # dependencies are resolved and produce merge all in $.resources
+    # format path: https://github.com/hashicorp/go-getter#url-format
+  - name: github.com/kubernetes-monitoring/kubernetes-mixin//alerts/system_alerts?ref=master
+     # override config
+
+  - name: ./absent_alerts
+    # don't apply the config $.config
+    global_config: false
+  - name: "./postgres"
+    # don't import all, only specific names
+    alerts:
+      - "postgres-prod"
+    dashboards:
+      - "postgres-prod-grafana"
+    rules:
+      - "postgres-prod"
+
+
+resources:
+ alerts: {}
+ dashboards: {}
+ rules: {}

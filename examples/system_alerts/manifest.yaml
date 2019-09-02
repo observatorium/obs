@@ -1,0 +1,16 @@
+name: "kubernetes-absent-alerts"
+description: >
+  "Creates alerts if a component is not Present.
+   List all labels selectors in the 'jobs' variable "
+
+type: "alerts"
+
+specs:
+   # Merge all dict
+   - spec.libsonnet
+
+resources:
+  alerts:
+    system_alerts: std.native("import", "template/system_alerts.libsonnet")
+  dashboards:
+

@@ -1,0 +1,18 @@
+- name: readfile
+  desc: "open a file and return as string its content.
+  Can be used only with relative path up."
+
+- name: getenv
+  args: ["name", "default=null"]
+  desc: return an environment variable
+- name: jsonnet
+  args: [str, "env={}"]
+  desc: render using jsonnet a template passed in arguments
+- name: yamlLoads
+  desc: convert a yaml string to object
+  args: [yaml_str]
+- name: jsonLoads
+  desc: convert a json string to object
+  args: [yaml_str]
+
+\

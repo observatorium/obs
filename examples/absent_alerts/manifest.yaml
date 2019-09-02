@@ -1,0 +1,52 @@
+descriptor:
+  description: |-
+          Creates alerts if a component is not Present.
+          List all labels selectors in the 'jobs' variable
+  icons:
+  - size: 209x203
+    src: https://upload.wikimedia.org/wikipedia/en/0/00/Kubernetes_%28container_engine%29.png
+    type: image/png
+  keywords:
+  - kubernetes
+  - kube-system
+  - alerts
+  links:
+  - name: GitRepo
+    url: https://github.com/kubernetes-monitoring/kubernetes-mixin
+  maintainers:
+  - emails: alegrand@redhat.com
+    name: ant31
+  name: kubernetes-absent-alerts
+  types:
+  - alerts
+
+resources:
+  alerts:
+  - kubernetes-absent:
+      src: templates/absent_alerts.libsonnet
+      
+specs:
+  jobs:
+    additionalProperties:
+      type: string
+    default:
+      KubeAPI: job="kube-apiserver"
+      KubeControllerManager: job="kube-controller-manager"
+      KubeScheduler: job="kube-scheduler"
+      Kubelet: job="kubelet"
+    description: List of the components labels to watch
+    required: true
+    type: object
+  rule:
+    default: kubernetes-absent
+    description: The rule name
+    required: true
+    type: string
+
+config:
+  jobs:
+    KubeAPI: job="kube-apiserver"
+    KubeControllerManager: job="kube-controller-manager"
+    KubeScheduler: job="kube-scheduler"
+    Kubelet: job="kubelet"
+  rule: kubernetes-absent
